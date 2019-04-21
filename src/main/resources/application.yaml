@@ -6,21 +6,17 @@ spring:
       client:
         registration:
           google:
-            client-id: 257675311126-gc9q8cnq7c4qguaiuh6os3b8gd9k06p3.apps.googleusercontent.com
-            client-secret: LP_DFcbfOVo36vPbHEe6eSt7
+            client-id: your-app-client-id
+            client-secret: your-app-client-secret
             scope: profile
             redirect-uri-template: '{baseUrl}/login/oauth2/code/{registrationId}'
           github:
-            client-id: aca70059b03ed6b4b810
-            client-secret: 60fc9961d098b8fe4494114cb38ebd10acb16b11
-            redirect-uri-template: '{baseUrl}/login/oauth2/code/{registrationId}'
-          facebook:
             client-id: your-app-client-id
             client-secret: your-app-client-secret
             redirect-uri-template: '{baseUrl}/login/oauth2/code/{registrationId}'
           line:
-            client-id: 1565591582
-            client-secret: 5460831f372b5bb2f84bda2cfbe12bee
+            client-id: your-app-client-id
+            client-secret: your-app-client-secret
             provider: LINE
             scope: profile
             redirect-uri-template: '{baseUrl}/login/oauth2/code/{registrationId}'
