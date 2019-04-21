@@ -7,8 +7,7 @@ The following sections provide detailed steps for setting up OAuth 2.0 Login for
 
 * <<google-login, Google>>
 * <<github-login, GitHub>>
-* <<facebook-login, Facebook>>
-* <<okta-login, Okta>>
+* <<line-login, Line>>
 
 [[google-login]]
 == Login with Google
@@ -44,11 +43,11 @@ TIP: The default redirect URI template is `{baseUrl}/login/oauth2/code/{registra
  The *_registrationId_* is a unique identifier for the `ClientRegistration`.
 
 [[google-application-config]]
-=== Configure application.yml
+=== Configure application.yaml
 
 Now that you have a new OAuth Client with Google, you need to configure the application to use the OAuth Client for the _authentication flow_. To do so:
 
-. Go to `application.yml` and set the following configuration:
+. Go to `application.yaml` and set the following configuration:
 +
 [source,yaml]
 ----
@@ -108,11 +107,11 @@ TIP: The default redirect URI template is `{baseUrl}/login/oauth2/code/{registra
  The *_registrationId_* is a unique identifier for the `ClientRegistration`.
 
 [[github-application-config]]
-=== Configure application.yml
+=== Configure application.yaml
 
 Now that you have a new OAuth application with GitHub, you need to configure the application to use the OAuth application for the _authentication flow_. To do so:
 
-. Go to `application.yml` and set the following configuration:
+. Go to `application.yaml` and set the following configuration:
 +
 [source,yaml]
 ----
@@ -153,41 +152,34 @@ from the UserInfo Endpoint and establishes an authenticated session.
 For detailed information returned from the UserInfo Endpoint, see the API documentation
 for https://developer.github.com/v3/users/#get-the-authenticated-user["Get the authenticated user"].
 
-[[facebook-login]]
-== Login with Facebook
+[[line-login]]
+== Login with Line
 
-This section shows how to configure the sample application using Facebook as the Authentication Provider and covers the following topics:
+This section shows how to configure the sample application using Line as the Authentication Provider and covers the following topics:
 
-* <<facebook-register-application,Add a New App>>
-* <<facebook-application-config,Configure application.yml>>
-* <<facebook-boot-application,Boot up the application>>
+* <<line-register-application,Create New Provider>>
+* <<line-application-config,Configure application.yml>>
+* <<line-boot-application,Boot up the application>>
 
-[[facebook-register-application]]
-=== Add a New App
+[[line-register-application]]
+=== Create New Provider
 
-To use Facebook's OAuth 2.0 authentication system for login, you must first https://developers.facebook.com/apps[Add a New App].
+To use Line's OAuth 2.0 authentication system for login, you must first https://developers.line.biz/console[Create New Provider].
 
-Select "Create a New App" and then the "Create a New App ID" page is presented. Enter the Display Name, Contact Email, Category and then click "Create App ID".
+For the field *Valid OAuth redirect URIs*, enter `http://localhost:8080/login/oauth2/code/line` then click _Save Changes_.
 
-NOTE: The selection for the _Category_ field is not relevant but it's a required field - select "Local".
-
-The next page presented is "Product Setup". Click the "Get Started" button for the *Facebook Login* product.
-In the left sidebar, under _Products -> Facebook Login_, select _Settings_.
-
-For the field *Valid OAuth redirect URIs*, enter `http://localhost:8080/login/oauth2/code/facebook` then click _Save Changes_.
-
-The OAuth redirect URI is the path in the application that the end-user's user-agent is redirected back to after they have authenticated with Facebook
+The OAuth redirect URI is the path in the application that the end-user's user-agent is redirected back to after they have authenticated with Line
 and have granted access to the application on the _Authorize application_ page.
 
 TIP: The default redirect URI template is `{baseUrl}/login/oauth2/code/{registrationId}`.
  The *_registrationId_* is a unique identifier for the `ClientRegistration`.
 
-[[facebook-application-config]]
-=== Configure application.yml
+[[line-application-config]]
+=== Configure application.yaml
 
-Now that you have created a new application with Facebook, you need to configure the sample application to use the application for the _authentication flow_. To do so:
+Now that you have created a new application with Line, you need to configure the sample application to use the application for the _authentication flow_. To do so:
 
-. Go to `application.yml` and set the following configuration:
+. Go to `application.yaml` and set the following configuration:
 +
 [source,yaml]
 ----
@@ -196,114 +188,32 @@ spring:
     oauth2:
       client:
         registration:	<1>
-          facebook:		<2>
-            client-id: facebook-client-id
-            client-secret: facebook-client-secret
+          line:		<2>
+            client-id: your-app-client-id
+            client-secret: your-app-client-secret
+            provider: LINE
+            scope: profile
+            redirect-uri-template: '{baseUrl}/login/oauth2/code/{registrationId}'
+            client-authentication-method: basic
+            authorization-grant-type: authorization_code
+        provider:
+          LINE:
+            authorization-uri: https://access.line.me/oauth2/v2.1/authorize
+            token-uri: https://api.line.me/oauth2/v2.1/token
+            user-info-uri: https://api.line.me/v2/profile
+            user-name-attribute: userId 
 ----
 +
 .OAuth Client properties
 ====
 <1> `spring.security.oauth2.client.registration` is the base property prefix for OAuth Client properties.
-<2> Following the base property prefix is the ID for the `ClientRegistration`, such as facebook.
+<2> Following the base property prefix is the ID for the `ClientRegistration`, such as line.
 ====
 
 . Replace the values in the `client-id` and `client-secret` property with the OAuth 2.0 credentials you created earlier.
 
-[[facebook-boot-application]]
+[[line-boot-application]]
 === Boot up the application
 
 Launch the Spring Boot 2.0 sample and go to `http://localhost:8080`.
-You are then redirected to the default _auto-generated_ login page, which displays a link for Facebook.
-
-Click on the Facebook link, and you are then redirected to Facebook for authentication.
-
-After authenticating with your Facebook credentials, the next page presented to you is "Authorize application".
-This page will ask you to *Authorize* the application you created in the previous step.
-Click _Authorize application_ to allow the OAuth application to access your _public profile_ and _email address_ information.
-
-At this point, the OAuth Client retrieves your personal user information
-from the UserInfo Endpoint and establishes an authenticated session.
-
-[[okta-login]]
-== Login with Okta
-
-This section shows how to configure the sample application using Okta as the Authentication Provider and covers the following topics:
-
-* <<okta-register-application,Add Application>>
-* <<okta-assign-application-people,Assign Application to People>>
-* <<okta-application-config,Configure application.yml>>
-* <<okta-boot-application,Boot up the application>>
-
-[[okta-register-application]]
-=== Add Application
-
-To use Okta's OAuth 2.0 authentication system for login, you must first https://www.okta.com/developer/signup[create a developer account].
-
-Sign in to your account sub-domain and navigate to _Applications -> Applications_ and then select the "Add Application" button.
-From the "Add Application" page, select the "Create New App" button and enter the following:
-
-* *Platform:* Web
-* *Sign on method:* OpenID Connect
-
-Select the _Create_ button.
-On the "General Settings" page, enter the Application Name (for example, "Spring Security Okta Login") and then select the _Next_ button.
-On the "Configure OpenID Connect" page, enter `http://localhost:8080/login/oauth2/code/okta` for the field *Redirect URIs* and then select _Finish_.
-
-The redirect URI is the path in the application that the end-user's user-agent is redirected back to after they have authenticated with Okta
-and have granted access to the application on the _Authorize application_ page.
-
-TIP: The default redirect URI template is `{baseUrl}/login/oauth2/code/{registrationId}`.
- The *_registrationId_* is a unique identifier for the `ClientRegistration`.
-
-[[okta-assign-application-people]]
-=== Assign Application to People
-
-From the "General" tab of the application, select the "Assignments" tab and then select the _Assign_ button.
-Select _Assign to People_ and assign your account to the application. Then select the _Save and Go Back_ button.
-
-[[okta-application-config]]
-=== Configure application.yml
-
-Now that you have created a new application with Okta, you need to configure the sample application to use the application for the _authentication flow_. To do so:
-
-. Go to `application.yml` and set the following configuration:
-+
-[source,yaml]
-----
-spring:
-  security:
-    oauth2:
-      client:
-        registration:	<1>
-          okta:		<2>
-            client-id: okta-client-id
-            client-secret: okta-client-secret
-        provider:	<3>
-          okta:
-            authorization-uri: https://your-subdomain.oktapreview.com/oauth2/v1/authorize
-            token-uri: https://your-subdomain.oktapreview.com/oauth2/v1/token
-            user-info-uri: https://your-subdomain.oktapreview.com/oauth2/v1/userinfo
-            user-name-attribute: sub
-            jwk-set-uri: https://your-subdomain.oktapreview.com/oauth2/v1/keys
-----
-+
-.OAuth Client properties
-====
-<1> `spring.security.oauth2.client.registration` is the base property prefix for OAuth Client properties.
-<2> Following the base property prefix is the ID for the `ClientRegistration`, such as okta.
-<3> `spring.security.oauth2.client.provider` is the base property prefix for OAuth Provider properties.
-====
-
-. Replace the values in the `client-id` and `client-secret` property with the OAuth 2.0 credentials you created earlier.
-As well, replace `https://your-subdomain.oktapreview.com` in `authorization-uri`, `token-uri`, `user-info-uri` and `jwk-set-uri` with the sub-domain assigned to your account during the registration process.
-
-[[okta-boot-application]]
-=== Boot up the application
-
-Launch the Spring Boot 2.0 sample and go to `http://localhost:8080`.
-You are then redirected to the default _auto-generated_ login page, which displays a link for Okta.
-
-Click on the Okta link, and you are then redirected to Okta for authentication.
-
-After authenticating with your Okta account credentials, the OAuth Client retrieves your email address and basic profile information
-from the https://openid.net/specs/openid-connect-core-1_0.html#UserInfo[UserInfo Endpoint] and establishes an authenticated session.
+You are then redirected to the default _auto-generated_ login page, which displays a link for Line.
