@@ -164,7 +164,7 @@ This section shows how to configure the sample application using Line as the Aut
 [[line-register-application]]
 === Create New Provider
 
-To use Line's OAuth 2.0 authentication system for login, you must first https://developers.line.biz/console[Create New Provider].
+To use Line's OAuth 2.0 authentication system for login, you must first https://developers.line.biz/console/[Create New Provider].
 
 For the field *Valid OAuth redirect URIs*, enter `http://localhost:8080/login/oauth2/code/line` then click _Save Changes_.
 
